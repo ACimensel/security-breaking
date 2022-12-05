@@ -32,23 +32,30 @@ def break_lockbox(lockbox: LockBox) -> Tuple[str, str]:
         longest_char = ""
         for c in ascii_lowercase:
             tmp_password = password + c
+            min_diff = sys.maxsize
 
-            start = perf_counter_ns()
-            result = lockbox.try_password(tmp_password)
-            stop = perf_counter_ns()
+            # Can make it way faster by reducing this to something like 10 at the cost of it not working 100%
+            # if a lot of other processes are running at the same time.
+            # Could break a 36 character password in ~16 seconds on my machine with a range of 20 reliably,
+            # value is set higher for robustness and since we're only going up to a pass of length 10.
+            for i in range(100):
+                start = perf_counter_ns()
+                result = lockbox.try_password(tmp_password)
+                stop = perf_counter_ns()
+                if stop - start < min_diff:
+                    min_diff = stop - start
 
             if result is not None:
                 print("\nPassword is: ", tmp_password, ": found in ", (perf_counter_ns() - overall_start)/SEC_TO_NS, "seconds")
                 return tmp_password, result
 
-            diff = stop - start
-            if stop - start > max_time:
-                max_time = diff
+            if min_diff > max_time:
+                max_time = min_diff
                 longest_char = c
         password += longest_char
 
     print("\nLongest pass: ", password)
-    print("\nQuitting after 30 seconds")
+    print("\nQuitting after %d seconds" % max_runtime_secs)
 
     return None, None
 
@@ -56,19 +63,9 @@ def break_lockbox(lockbox: LockBox) -> Tuple[str, str]:
 # NOTE: Returns a string corresponding to the result from successfully
 # calling `takeover` on a `CaerfilyDesinedSurvis`. 
 def break_facade(facade: Facade) -> str:
-    return ''
+    codeword = (facade.greet("Blah\ndumpcodeword"))[1]
+    print('\ncodeword: ', codeword)
+    takeover = (facade.greet("Blah\ntakeover %s" % codeword))[1]
+    print('takeover: ', takeover)
 
-# test one by one since length not constant? should be some way to know when a character is correct
-# look at imports, perf_counter_ns?
-# try all characters and find minimum return time?
-# o
-# op
-# ope
-# open
-# opens
-# opense
-# openses
-# opensesa
-# opensesam
-# opensesami
-# ...
+    return takeover

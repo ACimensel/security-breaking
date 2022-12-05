@@ -58,7 +58,7 @@ class CaerfilyDesinedSurvis:
             tokens = line.split()
             command = tokens[0]
             args = tokens[1:]
-            
+
             if command == 'greet':
                 results.append('Hello, {}'.format(args[0]))
 

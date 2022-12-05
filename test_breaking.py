@@ -4,22 +4,22 @@ from breaking import break_lockbox, break_facade
 
 
 def test_break_lockbox():
-    # password = 'shivdeeartunshivdeeartunshivdeeartun' # failed shivdeeartunshivdeeartunshi(tnujmp....)
-    # password = 'opensesameopensesame' # failed opensesame(owzacgkxyraz...), succeeds adding new chars one by one, doesn't if all at once. something to do with warming?
-    password = 'opensesame'
+    password = 'shivdeeartun' # failed shivdeeartunshivdeeartunshi(tnujmp....)
+    # password = 'opensesameopensesame'
+    # password = 'opensesame'
     contents = 'TODO: (1) take over the world'
     lockbox = LockBox(password, contents)
 
     found_password, found_contents = break_lockbox(lockbox)
-    
+
     assert found_password == password
     assert found_contents == contents
 
 
-# def test_break_facade():
-#     service = CaerfilyDesinedSurvis('potatocakes')
-#     facade = service.create_facade()
-#
-#     takeover = break_facade(facade)
-#
-#     assert takeover == 'Taking over!'
+def test_break_facade():
+    service = CaerfilyDesinedSurvis('potatocakes')
+    facade = service.create_facade()
+
+    takeover = break_facade(facade)
+
+    assert takeover == 'Taking over!'
