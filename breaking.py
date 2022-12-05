@@ -37,7 +37,8 @@ def break_lockbox(lockbox: LockBox) -> Tuple[str, str]:
             # Can make it way faster by reducing this to something like 10 at the cost of it not working 100%
             # if a lot of other processes are running at the same time.
             # Could break a 36 character password in ~16 seconds on my machine with a range of 20 reliably,
-            # value is set higher for robustness and since we're only going up to a pass of length 10.
+            # value is set higher for robustness and since we're only going up to a password of length 10.
+            # With the range set to 100, breaks a 12 char password in 5 seconds.
             for i in range(100):
                 start = perf_counter_ns()
                 result = lockbox.try_password(tmp_password)
